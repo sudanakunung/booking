@@ -10,6 +10,17 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::prefix('user')->group(function () {
+	Route::get('login', 'usercontroller@index');
+	Route::post('login', 'usercontroller@authenticate');
+	Route::post('getpassword', 'phpmailercontroller@sendmail');
+	Route::post('change_password', 'usercontroller@changepassword');
+	Route::post('change', 'usercontroller@change');
+	Route::get('dashboard', 'usercontroller@dashboard')->middleware('auth');
+	Route::get('mail', function(){
+		return view('user.mail');
+	});
+});
 
 Route::get('/', 'FrntController@index');
 Route::get('/properties', 'FrntController@properties');
@@ -18,7 +29,8 @@ Route::get('/area/{id}', 'FrntController@area');
 Route::get('/desa-wisata', 'FrntController@desa_wisata');
 Route::match(['get', 'post'], '/check-availability', 'FrntController@check_date');
 route::any('/order','FrntController@forget');
-
+Route::get('/session/clear', 'clear@index');
+Route::get('/session/cek', 'clear@cek');
 // administrator
 Route::match(['get', 'post'], '/log-in', 'AdmController@login');
 Route::get('/logout', 'AdmController@logout');
@@ -56,3 +68,9 @@ Route::group(['middleware' => ['auth']], function(){
 	Route::match(['get', 'post'], '/dashboard/city/edit/save/{id}', 'AdmController@city_edit_save');
 	Route::match(['get', 'post'], '/dashboard/city/delete/{id}', 'AdmController@city_delete');
 });
+Route::post('/booking/store', 'bookingcontroller@submitbooking')->name('booking.store');
+
+Route::post('/notification/handler', 'bookingcontroller@notificationHandler')->name('notification.handler');
+ route::get('/checkout', function(){
+		return view('frnt/checkout');
+ });

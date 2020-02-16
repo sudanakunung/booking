@@ -1,7 +1,18 @@
 @section('title')
 {{ $property->property_name }}
 @endsection
-
+<style>
+   .search-widget fieldset .largegreen-btn 
+{background-color: #FDC600;
+    font-size: 16px;
+    border: 1px solid #EAE9E9;
+    width: 100%;
+    height: 40px;
+    color: #FFF;
+    transition: all 0.3s ease 0s;
+    margin-top: 15px; background-color:#00fd9e;
+    }
+</style>
 @section('properties')
 active
 @endsection
@@ -148,22 +159,156 @@ active
                         <h3 class="panel-title">check availability</h3>
                     </div>
                     <div class="panel-body search-widget">
-                        @if (session::has('berhasil'))
+
+                        @if (session::has('berhasil'))           
+                        Hi, 
+                         {{session::get('full_name')}}
+                        <br>
+                        {{ Session::get('berhasil') }}
+                        <br>
+                        <hr>
+                        <form action="{{ url('/check-availability') }}" class="form-inline" method="post">@csrf
+                            <div class="row"  style="display:none"> 
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="text" class="form-control" value="{{session::get('full_name')}}" placeholder="Full name" id="full_name" name="full_name" required>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="text" class="form-control" value="{{session::get('email')}}" placeholder="Email" id="email" name="email" required>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="text" class="form-control" value="{{session::get('phone')}}" placeholder="Phone" id="phone" name="phone" required>
+                                </div>
+                            </div>
+                        </fieldset>
+                            </div>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                    <input type="date" class="form-control" value="{{session::get('date_start')}}" placeholder="Check-in date" id="date_start" name="date_start">
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <input type="date" class="form-control" value="{{session::get('date_end')}}" placeholder="Check-out date" id="date_end" name="date_end">
+                                    </div>
+                                </div>
+                            </fieldset>
+                     
+                            <input style="display:none" type="text" id="id_property"  class="form-control" placeholder="Check-out date" value="{{$property->id}}" name="id_property">
+                            <fieldset>
+                             
+                            <select class="form-control"   id="room" name="room">
+                                    
+                                            <option value="1">1 room - 2 orang</option>
+                                            <option value="2">2 room - 4 orang</option>
+                                            <option value="3">3 room - 6 orang</option>
+                                            <option value="4">4 room - 8 orang</option>
+                                        </select>     
+                            </fieldset>
+                         
+                            <fieldset >
+                                <div class="row">
+                                    <div class="col-xs-12">  
+                                        <input class="button btn largesearch-btn" value="Check Availability" type="submit">
+                                    </div>  
+                                </div>
+                            </fieldset>
+                        </form>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        Hi, {{ Session::get('berhasil') }}
-                                        {{session::get('full_name')}}
+                                   
+                                   
+                                        <span class="pull-left">Harga kamar</span><span class="pull-right" id="harga_kamar">{{ number_format($property->price, 0, ".", ".") }}</span>
+                                        <br>
+                                    <span class="pull-left">Jumlah kamar</span><span class="pull-right" id="jumlah_kamar">  {{ session::get('room') }}</span>
+                                    <br>
+                                    <span class="pull-left">Total</span><span class="pull-right property-price" id="total">Rp.  {{ number_format($property->price*session::get('room'),0,".",".")}}</span>
+                             <hr>
+                             <span class="pull-left">service</span><span class="pull-right property-price" id="total">Rp. {{ number_format(session::get('servis'),0,".",".")}}</span>
+                             <br>
+                             <span class="pull-left">Total</span><span class="pull-right property-price" id="total">Rp. {{ number_format(session::get('fix_harga'),0,".",".")}}</span>
+                             <br>
                                     </div>
                                 </div>
                             </fieldset>
                             <fieldset>
-                                <form action="{{ url('/order') }}" class="form-inline" method="post">@csrf 
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <input class="button btn largesearch-btn" value="Check Availability" type="submit">
-                                    </div>
+                                <form class="form-horizontal" onsubmit="return submitForm()" >
+                                <div class="row" style="display:none">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+    
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                             
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                              
+                                                <input type="text" class="form-control" placeholder="Full name"value="{{session::get('full_name')}}"  id="name" name="full_name" required>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <input type="text" class="form-control" placeholder="Email"value="{{session::get('email')}}"  id="email" name="email" required>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <input type="text" class="form-control" placeholder="Phone" value="{{session::get('phone')}}" id="phone" name="phone" required>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                        
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <input type="date" class="form-control" placeholder="Check-in date" value="{{session::get('date_start')}}" id="date_start" name="date_start">
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <input type="date" class="form-control" placeholder="Check-out date"value="{{session::get('date_end')}}"  id="date_end" name="date_end">
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                             
+                                    <input type="text" id="id_property"  class="form-control" placeholder="Check-out date"  value="{{$property->id}}" name="id_property">
+                                    <input type="text" id="fix_harga"  class="form-control" placeholder="Check-out date"  value="{{session::get('fix_harga')}}" name="fix_harga">
+                                    <input type="text" id="property_name"  class="form-control" placeholder="Check-out date"  value="{{session::get('property_name')}}" name="property_name">
+                                    <fieldset>
+                                     
+                                        <select class="form-control" id="room" name="room">
+                                        <option value="{{session::get('room')}}">1 room - 2 orang</option>
+                                         
+                                        </select>     
+                                         
+                                                </select>  
+                                            </div>   
+                                    </fieldset>
+                                   
+                                    <fieldset >
+                                        <div class="row">
+                                            <div class="col-xs-12">  
+                                                <input style="display:block" class="button btn largegreen-btn" value="BOOK NOW" type="submit">
+                                            </div>
+                                            </div>  
+                                
+                                    </fieldset>
                                 </div>
+                               
+                             
                             </fieldset>
                             <fieldset>
                                 <div class="row">
@@ -175,34 +320,45 @@ active
                         </form>
 
                         @else
-                        <form action="{{ url('/check-availability') }}" class="form-inline" method="post">@csrf 
-                            @if(Session::has('full_name'))
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        Hi, {{ Session::get('full_name') }}
-                                    </div>
+                    
+                            <form action="{{ url('/check-availability') }}" class="form-inline" method="post">
+                                @csrf 
+                          @method('post')
+
+                           @if(session::has('full'))
+                           <fieldset>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    Hi,
+                               {{-- @php dd(Session::get('data')) @endphp --}}
+                            
+                               {{session::get('full_name')}}
+                         
+                                    <br>
+                                    {{ Session::get('full') }}
                                 </div>
-                            </fieldset>
+                            </div>
+                        </fieldset>
+                      
                             @else
                             <fieldset>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <input type="text" class="form-control" placeholder="Full name" name="full_name">
+                                        <input type="text" class="form-control" placeholder="Full name" id="full_name" name="full_name" required>
                                     </div>
                                 </div>
                             </fieldset>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <input type="text" class="form-control" placeholder="Email" name="email">
+                                        <input type="text" class="form-control" placeholder="Email" id="email" name="email" required>
                                     </div>
                                 </div>
                             </fieldset>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <input type="text" class="form-control" placeholder="Phone" name="phone">
+                                        <input type="text" class="form-control" placeholder="Phone" id="phone" name="phone" required>
                                     </div>
                                 </div>
                             </fieldset>
@@ -210,34 +366,23 @@ active
                             <fieldset>
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <input type="date" class="form-control" placeholder="Check-in date" name="date_start">
+                                        <input type="date" class="form-control" placeholder="Check-in date" id="date_start" name="date_start">
                                     </div>
                                     <div class="col-xs-6">
-                                        <input type="date" class="form-control" placeholder="Check-out date" name="date_end">
+                                        <input type="date" class="form-control" placeholder="Check-out date" id="date_end" name="date_end">
                                     </div>
                                 </div>
                             </fieldset>
-                        <input type="hidden" class="form-control" placeholder="Check-out date" value="{{$property->id}}" name="id_property">
-                 
+                     
+                            <input style="display:none" type="text" id="id_property"  class="form-control" placeholder="Check-out date" value="{{$property->id}}" name="id_property">
                             <fieldset>
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <select class="form-control" name="adult">
-                                            <option>Adult</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <select class="form-control" name="child">
-                                            <option>Child</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                        </select>
-                                    </div>
-                                </div>
+                             
+                                        <select class="form-control" id="room" name="room">
+                                            <option value="1">1 room - 2 orang</option>
+                                            <option value="2">2 room - 4 orang</option>
+                                            <option value="3">3 room - 6 orang</option>
+                                            <option value="4">4 room - 8 orang</option>
+                                        </select>     
                             </fieldset>
                             <fieldset >
                                 <div class="row">
@@ -249,40 +394,14 @@ active
                       
                     
                         </form>
+                        @endif
                     </div>
-                    @endif
+                
                 </div>   
             </aside>
         </div>
     </div>
-    {{-- <div class="panel panel-default sidebar-menu wow fadeInRight animated" >
-        <div class="panel-heading">
-            <h3 class="panel-title">check availability</h3>
-        </div>
-        <div class="panel-body search-widget">
-            <form action="{{ url('/check-availability') }}" class="form-inline" method="post">@csrf 
-         
-                <fieldset>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <input type="date" class="form-control" name="date_start" placeholder="Check-in date">
-                        </div>
-                        <div class="col-xs-6">
-                            <input type="date" class="form-control" name="date_end" placeholder="Check-out date">
-                        </div>
-                    </div>
-                </fieldset>
-              
-                <fieldset >
-                    <div class="row">
-                        <div class="col-xs-12">  
-                            <input class="button btn largesearch-btn" value="Check Availability" type="submit">
-                        </div>  
-                    </div>
-                </fieldset>  
-            </form>
-        </div>
-    </div> --}}
+
     
 </aside>
 </div>
@@ -294,6 +413,48 @@ active
 @endsection
 
 @section('js')
+
+<script type="text/javascript">
+
+function submitForm() {
+
+// Kirim request ajax
+$.post("{{ route('booking.store') }}",
+{
+    _method: 'POST',
+    _token:  $('meta[name="csrf-token"]').attr('content'),
+    id_user: $('input#id_user').val(),
+    full_name: $('input#name').val(),
+    id_property:$('input#id_property').val(),
+    email:$('input#email').val(),
+    phone:$('input#phone').val(),
+    date_start:$('input#date_start').val(),
+    date_end:$('input#date_end').val(),
+    room:$('select#room').val(),
+    property_name:$('input#property_name').val(),
+    fix_harga:$('input#fix_harga').val(),
+    
+},
+function (data, status) {
+    snap.pay(data.snap_token, {
+        // Optional
+        onSuccess: function (result) {
+            location.reload();
+        },
+        // Optional
+        onPending: function (result) {
+            location.reload();
+        },
+        // Optional
+        onError: function (result) {
+            location.reload();
+        }
+    });
+});
+return false;
+}
+
+</script>
 <script src="{{ asset('vendors/hehehe/assets/js/lightslider.min.js') }}" type="text/javascript"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6hoGyKmhX5TUFJB9ucNsNvb-wm8wZxfI&callback=initMap"></script>
 <script>

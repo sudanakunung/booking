@@ -4,6 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title')</title>
@@ -69,7 +70,11 @@
     @yield('content')
 
     @include('frnt.footer')
-
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="{{ !config('services.midtrans.isProduction') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.clientKey') }}"></script>
     <script src="{{ asset('vendors/hehehe/assets/js/modernizr-2.6.2.min.js') }}"></script>
     <script src="{{ asset('vendors/hehehe/assets/js/jquery-1.10.2.min.js') }}"></script> 
     <script src="{{ asset('vendors/hehehe/bootstrap/js/bootstrap.min.js') }}"></script>

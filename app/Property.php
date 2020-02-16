@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\booking;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,4 +34,5 @@ class Property extends Model
     public function property_city(){
         return $this->belongsTo('App\City','city_id');
     }
+
 }
